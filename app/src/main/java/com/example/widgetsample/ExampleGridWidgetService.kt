@@ -55,20 +55,16 @@ class GridRemoteViewFactory(context: Context, intent: Intent) :
     override fun getCount(): Int = WIDGET_SIZE
 
     override fun getViewAt(position: Int): RemoteViews {
-        val remoteView = RemoteViews(context.packageName, R.layout.appwidget_grid_item).apply {
+        return RemoteViews(context.packageName, R.layout.appwidget_grid_item).apply {
             setTextViewText(R.id.item_title, widgetItems[position].text)
             Log.d("KKS", "widgetItem[$position] = ${widgetItems[position].text}")
+            setOnClickFillInIntent(R.id.widget_item, Intent().apply {
+                Bundle().also { extras ->
+                    extras.putInt(ExampleAppWidgetProvider.EXTRA_ITEM, position)
+                    putExtras(extras)
+                }
+            })
         }
-
-        val extras = Bundle().apply {
-            putInt(ExampleAppWidgetProvider.EXTRA_ITEM, position)
-        }
-        val fillIntent = Intent().apply {
-            putExtras(extras)
-        }
-        remoteView.setOnClickFillInIntent(R.id.widget_item, fillIntent)
-
-        return remoteView
     }
 
     override fun getLoadingView(): RemoteViews? = null
